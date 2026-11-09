@@ -1,0 +1,1832 @@
+:root {
+  /*
+    The shop skin. Light is the day look; dark is the counter look: a deep space
+    base with a cyan accent and a green money button, tuned for glare and for
+    ten-hour shifts. Translucent panels are reserved for the few surfaces that
+    float (top bar, cart, dialogs); tiles stay solid because a catalogue grid
+    can hold hundreds of them and blur costs battery on tablets.
+  */
+  --bg: #f4f5f8;
+  --bg-glow: none;
+  --panel: #ffffff;
+  --panel-glass: rgb(255 255 255 / 0.78);
+  --text: #0f172a;
+  --muted: #5b6472;
+  --line: #e3e7ee;
+  --line-strong: #cdd4e0;
+  --accent: #0891b2;
+  --accent-text: #ffffff;
+  /* Buttons filled with the accent; white text needs the darker cyan in both themes. */
+  --accent-fill: #0891b2;
+  /* The money button: charge, take payment. */
+  --charge: linear-gradient(135deg, #059669, #10b981);
+  --charge-glow: rgb(16 185 129 / 0.3);
+  /* Text on a danger or warning fill. */
+  --on-fill: #ffffff;
+  --danger: #dc2626;
+  --ok: #15803d;
+  --warn: #b45309;
+  --tile: #ffffff;
+  --radius: 14px;
+  /* The sale panel's width. Dragged wider or narrower at the till; the stylesheet
+     value is the default a reset goes back to. */
+  --cart-w: 400px;
+  --speed: 140ms;
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+[data-theme='dark'] {
+  --bg: #060a13;
+  --bg-glow:
+    radial-gradient(1200px 500px at 85% -10%, rgb(34 211 238 / 0.07), transparent 60%),
+    radial-gradient(1000px 600px at -10% 110%, rgb(129 140 248 / 0.06), transparent 55%);
+  --panel: #101725;
+  --panel-glass: rgb(16 23 37 / 0.72);
+  --text: #e8ecf4;
+  --muted: #8d99ad;
+  --line: rgb(148 163 184 / 0.16);
+  --line-strong: rgb(148 163 184 / 0.3);
+  --accent: #22d3ee;
+  --danger: #f87171;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --on-fill: #04120c;
+  --tile: #151e31;
+  color-scheme: dark;
+}
+
+/*
+  Accent colours a shop can pick in Settings, per device. The cyan above is the
+  default; each accent keeps a fill dark enough to carry white text, and the
+  money button stays green whatever the shop picks — it means one thing.
+*/
+[data-accent='violet'] {
+  --accent: #7c3aed;
+  --accent-fill: #7c3aed;
+}
+
+[data-accent='magenta'] {
+  --accent: #db2777;
+  --accent-fill: #db2777;
+}
+
+[data-accent='amber'] {
+  --accent: #b45309;
+  --accent-fill: #b45309;
+}
+
+[data-accent='blue'] {
+  --accent: #2563eb;
+  --accent-fill: #2563eb;
+}
+
+[data-theme='dark'][data-accent='violet'] {
+  --accent: #a78bfa;
+}
+
+[data-theme='dark'][data-accent='magenta'] {
+  --accent: #f472b6;
+}
+
+[data-theme='dark'][data-accent='amber'] {
+  --accent: #fbbf24;
+}
+
+[data-theme='dark'][data-accent='blue'] {
+  --accent: #60a5fa;
+}
+
+/*
+  The shop's own colour, whatever hex it is. The mixes keep it legible both
+  ways: deepened for the light theme's text, lifted for the dark theme's.
+*/
+[data-accent='custom'] {
+  --accent: color-mix(in srgb, var(--accent-custom, #0891b2) 80%, #04121c);
+  --accent-fill: color-mix(in srgb, var(--accent-custom, #0891b2) 68%, #001018);
+}
+
+[data-theme='dark'][data-accent='custom'] {
+  --accent: color-mix(in srgb, var(--accent-custom, #22d3ee) 82%, #eaf6ff);
+}
+
+/*
+  True black, for OLED counters: pure blacks cost no light, so the screen sits
+  quieter in a dim shop and the battery lasts a shift. Applies within the dark
+  theme only; the light theme is untouched.
+*/
+[data-theme='dark'][data-black='true'] {
+  --bg: #000;
+  --bg-glow:
+    radial-gradient(1200px 500px at 85% -10%, rgb(34 211 238 / 0.05), transparent 60%),
+    radial-gradient(1000px 600px at -10% 110%, rgb(129 140 248 / 0.04), transparent 55%);
+  --panel: #04070d;
+  --panel-glass: rgb(4 7 13 / 0.8);
+  --tile: #090e17;
+}
+
+/* Larger text, for staff who read the till at arm's length: the whole skin is
+   rem-based, so one root size carries it. */
+html[data-text='large'] {
+  font-size: 17.5px;
+}
+
+/*
+  Solid panels, for older screens and wall-mounted tablets where blur stutters
+  or the glass sits over a busy grid. The token does most of the work; the few
+  explicit blurs switch themselves off too.
+*/
+[data-solid='true'] {
+  --panel-glass: var(--panel);
+}
+
+[data-solid='true'] .topbar,
+[data-solid='true'] .cart,
+[data-solid='true'] .modal,
+[data-solid='true'] .toast {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-solid='true'] .overlay {
+  background: rgb(3 7 15 / 0.72);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-solid='true'] .tile .badge {
+  backdrop-filter: none;
+  background: rgb(3 7 15 / 0.75);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  background: var(--bg) var(--bg-glow, none);
+  background-attachment: fixed;
+}
+
+/* Thin, unobtrusive scrollbars: the catalogue is scrolled all day. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+  touch-action: manipulation;
+  transition: transform var(--speed), box-shadow var(--speed), background var(--speed), border-color var(--speed);
+}
+
+/* Every press answers with movement: the finger feels the tap land. */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+button.primary {
+  background: var(--accent-fill);
+  color: var(--accent-text);
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-fill) 25%, transparent);
+}
+
+[data-theme='dark'] button.primary {
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+button.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+button.big {
+  min-height: 56px;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+button.link {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  padding: 0.25rem;
+  min-height: 0;
+}
+
+/* A fingertip-sized hit area for the small inline ones, reaching into the text around them without
+   pushing the rows apart: an absolutely placed pseudo-element is part of its button for hit testing. */
+button.link.small {
+  position: relative;
+}
+
+button.link.small::after {
+  content: '';
+  position: absolute;
+  inset: -0.55rem -0.8rem;
+}
+
+button.icon {
+  min-width: 44px;
+  padding: 0.4rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  min-height: 44px;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+label.check {
+  flex-direction: row;
+  align-items: center;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+label.check input {
+  width: auto;
+  min-height: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.warn {
+  color: var(--warn);
+}
+
+.grow {
+  flex: 1;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.inline {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+}
+
+.inline > * {
+  flex: 1;
+}
+
+.toggle {
+  display: inline-flex;
+  flex: 0 0 auto !important;
+}
+
+.toggle button {
+  border-radius: 0;
+}
+
+.toggle button:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.toggle button:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.toggle button.active,
+.tabs button.active,
+.chip.active,
+.method.active {
+  background: var(--accent-fill);
+  color: var(--accent-text);
+  border-color: var(--accent-fill);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stepper input {
+  text-align: center;
+  width: 5rem;
+}
+
+.stepper span {
+  min-width: 2ch;
+  text-align: center;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--text);
+  margin-left: 0.4rem;
+}
+
+.badge.out {
+  background: var(--danger);
+  color: var(--on-fill);
+}
+
+.badge.low {
+  background: var(--warn);
+  color: var(--on-fill);
+}
+
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Login and register picker */
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: 1rem;
+}
+
+.login form,
+.login .form {
+  width: min(420px, 100%);
+  background: var(--panel);
+  padding: 2rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 10px 40px rgb(0 0 0 / 0.08);
+}
+
+.login h1 {
+  margin: 0;
+}
+
+/* Shell */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* The bar floats over the shop: glass, blur, no heavy seam. */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+  position: relative;
+  z-index: 4;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.topbar nav button {
+  border: 0;
+  background: none;
+  border-radius: 999px;
+  padding-inline: 1rem;
+}
+
+.topbar nav button.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+[data-theme='dark'] .topbar nav button.active {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.topbar nav button.badge {
+  align-self: center;
+  min-height: 0;
+  padding: 0.1rem 0.45rem;
+  margin-left: -0.2rem;
+  background: var(--line);
+}
+
+.register-name {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.status-pill {
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  min-height: 36px;
+  padding: 0.3rem 0.8rem;
+}
+
+.status-pill .dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-pill.ok {
+  color: var(--ok);
+}
+
+.status-pill.off {
+  color: var(--warn);
+}
+
+.status-pill.bad {
+  color: var(--danger);
+}
+
+/* Sell */
+.sell {
+  flex: 1;
+  display: grid;
+  /* The products give the sale panel its room: the grid's columns are auto-fill,
+     so they give back a column at a time as the panel is dragged wider. */
+  grid-template-columns: minmax(0, 1fr) 12px minmax(min(320px, 100%), var(--cart-w));
+  min-height: 0;
+}
+
+/* The handle between the products and the sale. A thin grip with a generous hit
+   area reaching past its 12px track, so a hurried drag still lands on it. */
+.divider {
+  position: relative;
+  touch-action: none;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  inset: 0 -5px;
+  cursor: col-resize;
+}
+
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  border-radius: 3px;
+  background: var(--line-strong);
+  transition: background var(--speed), box-shadow var(--speed);
+}
+
+.divider:hover::after,
+.divider.active::after,
+.divider:focus-visible::after {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.divider:focus-visible {
+  outline: none;
+}
+
+/* While the panel is being dragged, nothing selects and everything points the same way. */
+body.dragging-cart {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.products {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.75rem;
+  gap: 0.6rem;
+}
+
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chips {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+}
+
+.chip {
+  border-radius: 999px;
+  white-space: nowrap;
+  min-height: 44px;
+  padding: 0.3rem 1rem;
+  background: var(--panel);
+}
+
+.chip.active,
+.toggle button.active,
+.tabs button.active,
+.method.active {
+  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent), 0 4px 14px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-auto-rows: max-content;
+  gap: 0.7rem;
+  overflow-y: auto;
+  align-content: start;
+  flex: 1;
+  padding: 0.15rem 0.2rem 0.75rem;
+}
+
+/* Compact tiles: more of the catalogue on screen at once, for shops with big lists
+   or small counters. Comfortable (above) stays the default. */
+[data-density='compact'] .grid {
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.5rem;
+}
+
+[data-density='compact'] .tile {
+  min-height: 120px;
+}
+
+[data-density='compact'] .tile.text {
+  min-height: 84px;
+}
+
+[data-density='compact'] .tile.text .name {
+  font-size: 0.95rem;
+  padding-top: 0.55rem;
+}
+
+/*
+  A tile is a card: square, the photo filling it, the name and price riding on a
+  gradient so they stay legible over any product photo. A photo grows slightly
+  under the finger and the card answers the press, so tapping a busy grid feels
+  precise rather than mushy.
+*/
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  text-align: left;
+  padding: 0;
+  overflow: hidden;
+  background: var(--tile);
+  min-height: 150px;
+  aspect-ratio: 1 / 1;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 10px rgb(2 6 17 / 0.12);
+}
+
+.tile:not(.text) img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  background: var(--panel);
+  transition: transform 220ms ease;
+}
+
+.tile:not(:disabled):hover img {
+  transform: scale(1.05);
+}
+
+/* The scrim the name and price sit on. */
+.tile:not(.text)::before {
+  content: '';
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(to top, rgb(3 7 15 / 0.92) 30%, rgb(3 7 15 / 0.55) 70%, transparent);
+  z-index: 1;
+}
+
+.tile:not(.text) .name,
+.tile:not(.text) .price {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+.tile .name {
+  padding: 0.4rem 0.6rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* Without a photo the name is what the cashier reads, so it gets the space. */
+.tile.text {
+  aspect-ratio: auto;
+  min-height: 116px;
+  justify-content: flex-start;
+}
+
+.tile.text .name {
+  padding: 0.8rem 0.7rem 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.tile .price {
+  padding: 0.25rem 0.6rem 0.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-top: auto;
+}
+
+.tile:not(.text) .price {
+  color: #6ef3c5;
+}
+
+.tile .badge {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 3;
+  backdrop-filter: blur(6px);
+  background: rgb(3 7 15 / 0.55);
+  color: #fff;
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+
+/* How many are already on the sale, top-left so the stock badge keeps its corner.
+   It appears with a pop, so a tap or a scan visibly lands on the grid too. */
+.tile .badge.in-sale {
+  left: 0.45rem;
+  right: auto;
+  background: var(--accent-fill);
+  color: var(--accent-text);
+  border-color: transparent;
+  animation: pop-in 220ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+.tile.text .badge {
+  position: static;
+  align-self: flex-start;
+  margin: -0.3rem 0.6rem 0.5rem;
+}
+
+.tile.text .badge.in-sale {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-left: 1px solid var(--line);
+  min-height: 0;
+  padding: 0.75rem;
+  gap: 0.5rem;
+}
+
+/* The collapsed-sheet tab, which only the phone layout shows. */
+.cart-tab {
+  display: none;
+}
+
+.cart-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.customer-button {
+  flex: 1;
+  text-align: left;
+}
+
+.lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.lines li {
+  border-bottom: 1px solid var(--line);
+  animation: line-in 220ms ease;
+}
+
+/* A new line announces itself: it slides in under the last one and glows
+   briefly, so a tap or a scan visibly landed even mid-conversation. */
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  60% {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    background: transparent;
+  }
+}
+
+.cart-tab .tab-info.pop strong {
+  animation: count-pop 350ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+@keyframes count-pop {
+  40% {
+    transform: scale(1.35);
+  }
+}
+
+.line {
+  display: flex;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  gap: 0.5rem;
+  padding: 0.6rem 0.2rem;
+  align-items: center;
+}
+
+/* The product's photo beside the line, so a long sale reads at a glance. */
+.line img {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--panel);
+}
+
+.line .qty {
+  color: var(--muted);
+  min-width: 2.5ch;
+}
+
+.line .desc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.fulfilment {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: 0.5rem 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.fulfilment p {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.fulfilment label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.notes ul {
+  list-style: none;
+  padding: 0;
+  white-space: pre-line;
+}
+
+.notes li {
+  margin-bottom: 0.5rem;
+}
+
+.line small,
+.order-detail small {
+  display: block;
+  color: var(--muted);
+}
+
+.line .saving {
+  color: var(--ok);
+}
+
+.line .amount {
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.cart-tools button {
+  padding: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.totals {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin: 0;
+  gap: 0.2rem 0.5rem;
+}
+
+.totals dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.totals .grand {
+  font-size: 1.55rem;
+  font-weight: 750;
+  padding-top: 0.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.totals .grand dd {
+  letter-spacing: -0.01em;
+}
+
+/* The total answers when it changes, the way the item count on the phone's tab does. */
+.totals dd.grand.pop {
+  animation: count-pop 350ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+.totals .tax-sum {
+  display: none;
+}
+
+/* The money button: the one control a customer could point at from the door. */
+.charge {
+  min-height: 64px;
+  font-size: 1.3rem;
+  letter-spacing: 0.01em;
+  background: var(--charge);
+  border: 0;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 8px 24px var(--charge-glow), inset 0 1px 0 rgb(255 255 255 / 0.25);
+}
+
+.charge:not(:disabled):hover {
+  filter: brightness(1.06);
+}
+
+/* Dialogs */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(3 7 15 / 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  z-index: 10;
+  padding: 1rem;
+  animation: fade var(--speed) ease;
+}
+
+.modal {
+  background: var(--panel-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  width: min(480px, 100%);
+  max-height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgb(2 6 17 / 0.5);
+  animation: pop 200ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.95) translateY(8px);
+    opacity: 0;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.modal.wide {
+  width: min(900px, 100%);
+}
+
+.modal:focus {
+  outline: none;
+}
+
+p.saving {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem 0;
+}
+
+.modal header,
+.modal footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.modal header {
+  border-bottom: 1px solid var(--line);
+}
+
+.modal header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.modal footer {
+  border-top: 1px solid var(--line);
+  justify-content: flex-end;
+}
+
+.modal-body {
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.row-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+}
+
+.row-button > span:first-child {
+  flex: 1;
+}
+
+.row-button .grow,
+.customer-row > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.row-button button.link {
+  min-height: 44px;
+}
+
+.customer-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
+.variation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.quick button {
+  flex: 1;
+  min-width: 5rem;
+  min-height: 52px;
+  font-weight: 600;
+}
+
+.camera {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #000;
+}
+
+/* Tips: the preset chips on the charge screen. */
+.tips {
+  margin-bottom: 0.5rem;
+}
+
+.tips .quick {
+  margin-top: 0.3rem;
+}
+
+/* Checkout */
+.checkout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.checkout-left,
+.checkout-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.4rem;
+}
+
+.method {
+  min-height: 56px;
+  font-weight: 600;
+}
+
+.due {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.1rem;
+}
+
+.due strong {
+  font-size: 2rem;
+}
+
+.tenders {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tenders li {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.entry {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: right;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--panel) 60%, transparent);
+  box-shadow: inset 0 2px 12px rgb(2 6 17 / 0.14);
+}
+
+[data-theme='dark'] .entry {
+  color: var(--accent);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+
+/* Keys with a physical feel: a lip under the face, and the press seats the key. */
+.keypad button {
+  min-height: 58px;
+  font-size: 1.4rem;
+  border-bottom-width: 3px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 92%, #fff 8%), var(--panel));
+}
+
+[data-theme='dark'] .keypad button {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 80%, #fff 6%), var(--panel));
+}
+
+.keypad button:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.sale-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.change {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.change strong {
+  font-size: 2.6rem;
+  display: block;
+  text-align: center;
+  animation: pop-in 300ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+
+.receipt-preview {
+  background: #fff;
+  color: #000;
+  padding: 1rem;
+  border-radius: var(--radius);
+  max-height: 45vh;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+}
+
+/* Receipt, on screen and on paper */
+.receipt {
+  font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #000;
+  width: 72mm;
+  margin: 0 auto;
+}
+
+.receipt.w58 {
+  width: 48mm;
+  font-size: 10.5px;
+}
+
+.receipt.wa4 {
+  width: auto;
+  max-width: 160mm;
+  font-size: 13px;
+}
+
+.receipt h3 {
+  text-align: center;
+  margin: 0.2rem 0;
+  font-size: 1.3em;
+}
+
+.receipt > div:not(.row):not(.item) {
+  text-align: center;
+}
+
+.receipt .copy {
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.receipt .logo {
+  display: block;
+  max-width: 60%;
+  max-height: 25mm;
+  margin: 0 auto 0.3rem;
+  filter: grayscale(1);
+}
+
+.receipt .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.receipt .sub {
+  padding-left: 1em;
+  color: #333;
+}
+
+.receipt .row.sub {
+  padding-left: 0;
+}
+
+.receipt .total {
+  font-weight: 700;
+  font-size: 1.25em;
+}
+
+.receipt hr {
+  border: 0;
+  border-top: 1px dashed #000;
+  margin: 0.4rem 0;
+}
+
+.receipt .pre {
+  white-space: pre-line;
+}
+
+.receipt .note {
+  text-align: left !important;
+  margin-top: 0.4rem;
+}
+
+#print-root {
+  display: none;
+}
+
+/* Orders, reports, settings */
+.orders,
+.reports,
+.settings {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.order-list li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.order-list li.failed {
+  border-left: 3px solid var(--danger);
+  padding-left: 0.5rem;
+}
+
+.order-list .row-button > * {
+  flex: 0 0 auto;
+}
+
+.order-list .row-button > span:first-child,
+.order-list .row-button > strong:last-child {
+  flex: 1;
+}
+
+.status {
+  font-size: 0.8rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.status.completed {
+  background: color-mix(in srgb, var(--ok) 25%, transparent);
+}
+
+.status.refunded {
+  background: color-mix(in srgb, var(--danger) 25%, transparent);
+}
+
+.pager {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-detail table,
+.report table,
+.refund-lines {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-detail td,
+.report td,
+.report th,
+.refund-lines td {
+  padding: 0.45rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.order-detail tr.grand td {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.order-detail tr.refund td {
+  color: var(--danger);
+}
+
+.report .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.report .stats div {
+  background: var(--tile);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 10px rgb(2 6 17 / 0.08);
+}
+
+.report .stats strong {
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.settings section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 640px;
+}
+
+.settings h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* A label-like field whose control is a row of buttons rather than one input,
+   so tapping the text around them can't press the first one. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Accent swatches: the shop picks its colour at a glance. */
+.swatches {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.swatch {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.swatch.active {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.swatch[data-swatch='cyan'] {
+  background: linear-gradient(135deg, #0891b2, #22d3ee);
+}
+
+.swatch[data-swatch='violet'] {
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+}
+
+.swatch[data-swatch='magenta'] {
+  background: linear-gradient(135deg, #db2777, #f472b6);
+}
+
+.swatch[data-swatch='amber'] {
+  background: linear-gradient(135deg, #b45309, #f59e0b);
+}
+
+.swatch[data-swatch='blue'] {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+}
+
+/* The custom-colour swatch is the input itself: a round well of the shop's own colour. */
+input[type='color'].swatch {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  border: 2px solid var(--line-strong);
+  background: none;
+  cursor: pointer;
+}
+
+input[type='color'].swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type='color'].swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: calc(50% - 2px);
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  box-shadow: 0 12px 32px rgb(2 6 17 / 0.3);
+  z-index: 20;
+  max-width: calc(100% - 2rem);
+  /* Never in the way of the button under it. */
+  pointer-events: none;
+}
+
+/* A toast with something to click lines its pieces up; only the button itself
+   takes the clicks, so the toast never stands over a tile that wants them. */
+.toast.can-touch {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toast button.undo {
+  pointer-events: auto;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-weight: 700;
+  min-height: 0;
+  padding: 0.25rem 0.5rem;
+}
+
+.toast.error {
+  background: var(--danger);
+  color: var(--on-fill);
+  border-color: transparent;
+}
+
+/* Kiosk mode: the device is a till, not a browser. */
+html.kiosk,
+html.kiosk body {
+  user-select: none;
+}
+
+html.kiosk input,
+html.kiosk textarea {
+  user-select: text;
+}
+
+/* A cursor nobody is using just reminds the cashier this is a computer. */
+html.cursor-idle,
+html.cursor-idle body,
+html.cursor-idle button {
+  cursor: none;
+}
+
+/* Cashiers with reduced-motion preferences get the same UI without the movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Phones: products above, cart below. */
+@media (max-width: 760px) {
+  .topbar {
+    gap: 0.4rem;
+    padding-inline: 0.5rem;
+  }
+
+  .topbar nav {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  .topbar nav button {
+    padding-inline: 0.55rem;
+  }
+
+  .sell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* On a phone the cart is a sheet over the products, so there is nothing to resize. */
+  .divider {
+    display: none;
+  }
+
+  /* On a phone the cart is a sheet over the products, pulled up by its tab, so the grid keeps the
+     whole screen and a long sale gets a long list rather than a short one. */
+  .cart {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    border-radius: var(--radius) var(--radius) 0 0;
+    max-height: 80dvh;
+    overflow: hidden;
+    padding: 0 0.75rem calc(0.5rem + env(safe-area-inset-bottom));
+    gap: 0.35rem;
+    /* max-height rather than transform, so the fixed dialogs inside stay put against the viewport. */
+    transition: max-height 0.25s ease;
+  }
+
+  .cart:not(.open) {
+    max-height: calc(4.1rem + env(safe-area-inset-bottom));
+  }
+
+  .cart-tab {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+    margin: 0.35rem -0.4rem 0;
+  }
+
+  .cart-tab .tab-info {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    min-height: 0;
+    padding: 0.25rem 0.5rem;
+    text-align: left;
+  }
+
+  .cart-tab .tab-charge {
+    min-height: 3rem;
+    padding: 0 1.1rem;
+    font-weight: 600;
+  }
+
+  .cart-tab .chevron {
+    color: var(--muted);
+  }
+
+  .cart-head {
+    padding-top: 0.25rem;
+  }
+
+  /* The products end above the collapsed tab, not under it. */
+  .products {
+    padding-bottom: calc(4.6rem + env(safe-area-inset-bottom));
+  }
+
+  .line img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .lines {
+    min-height: 2.75rem;
+  }
+
+  .cart-tools button {
+    min-height: 44px;
+    padding: 0.35rem;
+  }
+
+  /* One tax row on a phone; the receipt still itemises each rate. */
+  .totals .tax-line {
+    display: none;
+  }
+
+  .totals .tax-sum {
+    display: block;
+  }
+
+  .charge {
+    min-height: 56px;
+  }
+
+  .tile {
+    min-height: 0;
+  }
+
+  .tile.text {
+    min-height: 88px;
+  }
+
+  .tile:not(.text) {
+    aspect-ratio: auto;
+    min-height: 128px;
+  }
+
+  .order-list .row-button {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+
+  .checkout {
+    grid-template-columns: 1fr;
+  }
+
+  /* The keypad can push Take below the fold on a small phone. */
+  .checkout-right > .primary.big {
+    position: sticky;
+    bottom: 0;
+  }
+
+  .register-name {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  }
+
+  [data-density='compact'] .grid {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  }
+
+  [data-density='compact'] .tile:not(.text) {
+    min-height: 100px;
+  }
+}
+
+/* Small phones: the green dot alone says all is well, and the tabs need the room. */
+@media (max-width: 400px) {
+  .status-pill.ok .status-text {
+    display: none;
+  }
+}
+
+@media print {
+  :root {
+    background: #fff;
+    color: #000;
+  }
+
+  .topbar,
+  .search-bar,
+  .toast,
+  .overlay,
+  .cart,
+  .cart-tab,
+  .divider {
+    display: none !important;
+  }
+
+  .printing-receipt .app {
+    display: none !important;
+  }
+
+  .printing-receipt #print-root {
+    display: block;
+  }
+
+  .printing-receipt .receipt {
+    margin: 0;
+    padding: 2mm 4mm;
+  }
+
+  .reports {
+    overflow: visible;
+  }
+}

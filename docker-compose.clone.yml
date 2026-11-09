@@ -1,0 +1,29 @@
+# A second, isolated stack for testing ShopTill against a copy of a real shop.
+#
+# It runs beside the dev shop without touching it: its own database and files (the project name
+# -p clone gives it separate volumes), on http://localhost:8089, bound to this machine only.
+#
+#   docker compose -p clone -f docker-compose.yml -f docker-compose.clone.yml up -d
+#
+# The addresses in a database dump point at the live site, so WP_HOME and WP_SITEURL are set to the
+# clone's own address here: no search-and-replace in the dump is needed, and nothing the clone
+# generates points back at production. WP_ENVIRONMENT_TYPE local is what lets the till sign in over
+# plain HTTP (application passwords are switched off without HTTPS otherwise).
+
+services:
+  wp:
+    # Compose adds ports to a list rather than replacing it, so the dev shop's 8088 is overridden here.
+    ports: !override
+      - "127.0.0.1:8089:80"
+    environment:
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('WP_HOME', 'http://localhost:8089');
+        define('WP_SITEURL', 'http://localhost:8089');
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        # A clone shouldn't wander off to production integrations or update itself mid-test.
+        define('DISABLE_WP_CRON', true);
+        define('AUTOMATIC_UPDATER_DISABLED', true);
+        define('WP_AUTO_UPDATE_CORE', false);

@@ -1,0 +1,154 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan Git history for credentials
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          archive="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          checksums="gitleaks_${GITLEAKS_VERSION}_checksums.txt"
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl --fail --silent --show-error --location "$base/$archive" --output "$archive"
+          curl --fail --silent --show-error --location "$base/$checksums" --output "$checksums"
+          grep "  $archive$" "$checksums" | sha256sum --check --strict -
+          tar -xzf "$archive" gitleaks
+          cd "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/gitleaks" git . --log-opts="--all" --redact
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npx vitest run tests/unit
+      - run: npm run build
+      - run: npm audit
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COMPOSE_PROJECT_NAME: shoptill-ci
+      SHOPTILL_URL: http://localhost:8088
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+        working-directory: app
+      - run: npm run build
+        working-directory: app
+      - run: npx playwright install --with-deps chromium
+        working-directory: app
+      - name: Install isolated test shop
+        run: |
+          docker compose up -d db wp
+          ready=false
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent "$SHOPTILL_URL/wp-admin/install.php" >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          "$ready"
+          docker compose run --rm cli core install --url="$SHOPTILL_URL" --title="ShopTill CI" --admin_user=admin --admin_password=admin --admin_email=admin@example.test --skip-email
+          docker compose run --rm cli plugin install woocommerce --version=11.2.2 --activate
+          docker compose run --rm cli plugin install cost-of-goods-for-woocommerce --version=4.2.3 --activate
+          docker compose run --rm cli plugin activate shoptill
+          docker compose run --rm cli option update woocommerce_custom_orders_table_enabled no
+          docker compose run --rm cli rewrite structure '/%postname%/' --hard
+          docker compose run --rm cli eval-file /dev-scripts/seed.php exclusive
+          docker compose run --rm cli option update shoptill_pay_later yes
+      - name: Create test-only device credentials
+        run: |
+          for role in cashier admin; do
+            password=admin
+            if [ "$role" = cashier ]; then password=cashier-pass; fi
+            token=$(curl --fail --silent --show-error "$SHOPTILL_URL/wp-json/shoptill/v1/auth/login" -H 'Content-Type: application/json' --data "{\"username\":\"$role\",\"password\":\"$password\",\"device\":\"CI\"}" | jq -er '.token')
+            echo "::add-mask::$token"
+            if [ "$role" = cashier ]; then
+              echo "SHOPTILL_TOKEN=$token" >> "$GITHUB_ENV"
+            else
+              echo "SHOPTILL_ADMIN_TOKEN=$token" >> "$GITHUB_ENV"
+            fi
+          done
+      - name: Server rules and totals parity
+        run: npx vitest run tests/server tests/parity
+        working-directory: app
+      - name: Tax-inclusive subtotal-rounding parity and coupon minimums
+        run: |
+          docker compose run --rm cli eval-file /dev-scripts/seed.php inclusive yes
+          cd app
+          npx vitest run tests/parity tests/server/discounts.test.ts
+          npx vitest run tests/server/server.test.ts -t 'loads the shop|checks a minimum spend'
+      - name: Reset browser test fixtures
+        run: |
+          docker compose run --rm cli eval-file /dev-scripts/seed.php exclusive
+          docker compose run --rm cli option update shoptill_pay_later yes
+      - name: Manual discount recalculation with HPOS
+        run: |
+          docker compose run --rm cli wc hpos sync
+          docker compose run --rm cli option update woocommerce_custom_orders_table_enabled yes
+          cd app
+          npx vitest run tests/server/discounts.test.ts
+          cd ..
+          docker compose run --rm cli wc hpos sync
+          docker compose run --rm cli option update woocommerce_custom_orders_table_enabled no
+      - name: Till browser regressions
+        run: npm run e2e
+        working-directory: app
+      - name: Check fail-closed behavior after Multisite conversion
+        run: |
+          docker compose run --rm cli core multisite-convert --title="Unsupported network fixture"
+          cd app
+          SHOPTILL_MULTISITE=1 npx vitest run tests/server/multisite.test.ts
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: integration-test-results
+          path: app/test-results/
+          retention-days: 7
+      - name: Stop test shop
+        if: always()
+        run: docker compose down
+
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: Check plugin syntax
+        run: find plugin/shoptill -name '*.php' -print0 | xargs -0 -n 1 php -l

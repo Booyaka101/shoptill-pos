@@ -1,0 +1,631 @@
+# ShopTill translation template.
+# Copyright (C) 2026 ShopTill contributors
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-07 01:37+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-orders.php
+msgid "%1$s paid at the till by %2$s on %3$s."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s So it waits to be collected."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s is sold one at a time, so this sale has more than one of it."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s is sold one at a time."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s no longer exists, so it was recorded as a custom item."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s of the refund came off what the customer owed."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s was sold at a changed price by an account that may not change prices; the sale is kept as charged."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "%s was taken off sale before this sale synced."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "(tendered %1$s, change %2$s)"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "A delivery charge needs the sale marked for delivery."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "A delivery needs a street, a town and a country the shop delivers to."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "A discount was given by an account that may not change prices; the sale is kept as charged."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "A valid email address is required."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Add a register…"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Admin new-order emails"
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Another account already uses that email address."
+msgstr ""
+
+#: includes/class-auth.php
+msgid "Another sign-in from this device is being checked. Try again in a moment."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Another till is saving this right now. Try again in a moment."
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "Any"
+msgstr ""
+
+#: includes/class-auth.php
+msgid "Application passwords are turned off on this site. They need HTTPS, and no security plugin blocking them."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "At the till."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Bank transfer"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Card"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Cash"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Cashier refunds"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Cashier: %s"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Cashiers may change prices"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Cheque"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Choose collect or deliver."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Choose how the money goes back."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Clear a name to remove that register. Past orders keep the register name they were taken on."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Completed"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Coupon "%s" can only be used on its own."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Coupon "%s" does not exist."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Coupon "%s" is limited per customer. Choose the customer first."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Coupon %1$s was not applied: %2$s"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Custom items need a name and a valid tax class."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Customer emails"
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Customer not found."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Date must be YYYY-MM-DD."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Delivery"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Each till that sells through the POS. Orders are tagged with the register and outlet they were taken on."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Enabled"
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Enter the cash as an amount."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Enter the cash counted as an amount."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Every line needs a quantity above zero."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Footer"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "General"
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "Give a regular price, and any sale price below it."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Header"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Hide from the till"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "ID"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Invalid refund line."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "It's a new day. Open today's report to record cash."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Keep this product off the POS. It still sells online."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Label for "Other""
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Let accounts that cannot edit products change an item\'s price or discount it at the till."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Let every till user give refunds, not only administrators and shop managers."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Let the till put a sale on a customer\'s account. The order stays on hold until it is paid off at the till."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Let the till sell products with no stock left. Stock goes negative."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Logo URL"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Made on %s, more than 30 days before it synced, so it is dated today."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Main register"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Missing or malformed client_id."
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "No cost of goods plugin is active on the shop."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Not enough stock for %s."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Not recorded"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Nothing is owed on this order."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Nothing left to pay."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Nothing to pay"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "On account"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Only %1$s of %2$s can still be refunded."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Only orders being packed, collected or delivered can change status here."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Only staff may change item prices."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Only staff may change prices or give discounts."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Only staff who can edit users can change a customer's email."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Open POS"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Open the till at"
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Order not found."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Orders"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Other"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Outlet"
+msgstr ""
+
+#: includes/class-plugin.php
+msgid "POS Cashier"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "POS sale on %s."
+msgstr ""
+
+#: includes/class-auth.php
+msgid "POS tokens only work with the POS."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Paid in full."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Paper width"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Pay later"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Payment methods"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Payments (%1$s) come to more than the order total (%2$s)."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Payments (%1$s) do not cover the order total (%2$s)."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Payments add up to %s more than the total."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Payments fall %s short of the total, so the order is on hold."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Phone"
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Point of sale"
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "Prices must be numbers, zero or more."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Printed under the shop name. Address, opening hours, website."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Processing"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Product #%d"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Product %d is not available."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Product not found."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "Receipt emailed to %s from the till."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Receipts"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Refund amount is zero or more than is left to refund."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Refunded %1$s at the till by %2$s."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Register"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Register name"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Registers"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Returns policy, thank-you note."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Say what the cash was for."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Sell out-of-stock items"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Send WooCommerce order emails to customers for POS sales. Receipts can still be emailed from the till."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Send the "New order" admin email for POS sales."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "ShopTill"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Show SKU"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Sold offline with more %s than was in stock."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Sold on account: %s to pay later."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Split: %s"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Status for POS sales"
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "Stock must be a number, zero or more."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Take no more than the %s owed."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Taken by %1$s, synced while %2$s was signed in."
+msgstr ""
+
+#: includes/class-admin.php
+msgid "Taken offline and synced later."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Tax number"
+msgstr ""
+
+#: includes/class-reports.php
+msgid "That day hasn't come yet."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "That email address cannot be used for a customer."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "That email address is not valid."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "That is as many emails as can be sent for now. Try again in an hour."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The %s delivery charge was dropped, since the sale waits to be collected."
+msgstr ""
+
+#: includes/class-app.php
+msgid "The POS app has not been built. Run npm run build in the app folder."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The cart is empty."
+msgstr ""
+
+#: includes/class-catalog.php
+#: includes/class-orders.php
+msgid "The cost must be a number, zero or more."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The delivery charge must be an amount."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The order status could not be changed."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The register this sale was taken on has since been removed."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "The shop could not save that. Try again."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "The shop could not send the email. Check its mail settings in WordPress."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "The shop doesn't sell to that country."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "The shop uses plain permalinks, so the till lives on that address rather than /pos/. Switching to pretty permalinks gives it the shorter one."
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "The stock changed while you were counting. Count it again."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The tax class on %s has since been removed, so it was taxed at the standard rate."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "The till showed a total of %1$s; WooCommerce calculated %2$s."
+msgstr ""
+
+#: includes/class-auth.php
+msgid "This account is not allowed to use the POS."
+msgstr ""
+
+#: includes/class-rest.php
+msgid "This order has no email address."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "This order has not been paid yet. Take the payment here, or mark it paid in WooCommerce once the money arrives."
+msgstr ""
+
+#: includes/class-auth.php
+msgid "Too many failed logins. Try again in 15 minutes."
+msgstr ""
+
+#: includes/class-reports.php
+msgid "Unknown"
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Unknown order status."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Unknown payment method or empty amount."
+msgstr ""
+
+#: includes/class-orders.php
+#: includes/class-reports.php
+msgid "Unknown register."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "VAT, GST or ABN number shown on receipts."
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "WooCommerce does not count stock for this product."
+msgstr ""
+
+#: includes/class-orders.php
+msgid "Write the note first."
+msgstr ""
+
+#: includes/class-auth.php
+msgid "Wrong username or password."
+msgstr ""
+
+#: includes/class-catalog.php
+msgid "Your account cannot see or set costs."
+msgstr ""

@@ -1,0 +1,45 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+
+# test / tooling caches and artifacts
+.vitest/
+.vite/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# secrets - dev tokens must never be committed
+dev/.token
+dev/.admintoken
+*.token
+.env
+.env.*
+!.env.example
+
+# local databases / uploads
+*.db
+*.sqlite
+*.sqlite3
+uploads/
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+shoptill-cleanup-*.php
+
+shoptill.zip

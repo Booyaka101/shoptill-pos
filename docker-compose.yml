@@ -1,0 +1,49 @@
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: wp
+      MARIADB_USER: wp
+      MARIADB_PASSWORD: wp
+    volumes:
+      - db:/var/lib/mysql
+
+  wp:
+    image: wordpress:php8.3-apache
+    depends_on: [db]
+    ports:
+      - "127.0.0.1:8088:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wp
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+    volumes:
+      - wp:/var/www/html
+      - ./plugin/shoptill:/var/www/html/wp-content/plugins/shoptill
+
+  cli:
+    image: wordpress:cli-php8.3
+    depends_on: [db, wp]
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp
+      WORDPRESS_DB_PASSWORD: wp
+      WORDPRESS_DB_NAME: wp
+    volumes:
+      - wp:/var/www/html
+      - ./plugin/shoptill:/var/www/html/wp-content/plugins/shoptill
+      - ./dev:/dev-scripts
+    entrypoint: ["wp"]
+    profiles: [cli]
+
+volumes:
+  db:
+  wp:
